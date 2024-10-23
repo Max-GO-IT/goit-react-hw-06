@@ -1,17 +1,27 @@
-import { useState } from 'react';
+
 import * as yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/contactsSlice';
+import { useSelector } from 'react-redux';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required').min(3).max(50),
   number: yup.string().required('Number is required').min(3).max(50),
 });
 
-const ContactForm = ({ funAdd }) => {
+const ContactForm = () => {
+
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.items);
+
+  const handleAddContact = (name, phone) => {
+    dispatch(addContact({ id: `id-${contacts.length + 1}`, name, number: phone }));
+  };
+
 
   const handleSubmit = (values, { resetForm }) => {
-    funAdd(values.name, values.number);
+    handleAddContact(values.name, values.number);
     resetForm(); 
   };
 
